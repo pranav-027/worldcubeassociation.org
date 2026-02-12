@@ -10,24 +10,29 @@ import useLoggedInUserPermissions from '../../../../lib/hooks/useLoggedInUserPer
 import BannedCompetitorForm from './BannedCompetitorForm';
 
 export default function BannedCompetitorsPage() {
+  const [activePage, setActivePage] = useState(1);
+  const [pastPage, setPastPage] = useState(1);
+
   const {
     data: bannedCompetitorRoles,
+    headers: bannedCompetitorHeaders,
     loading: bannedCompetitorRolesLoading,
     error: bannedCompetitorRolesError,
     sync: syncBannedCompetitorRoles,
-  } = useLoadedData(apiV0Urls.userRoles.list({
+  } = useLoadedData(`${apiV0Urls.userRoles.list({
     isActive: true,
     groupType: groupTypes.banned_competitors,
-  }, 'startDate'));
+  }, 'startDate')}&page=${activePage}`);
   const {
     data: pastBannedCompetitorRoles,
+    headers: pastBannedCompetitorHeaders,
     loading: pastBannedCompetitorRolesLoading,
     error: pastBannedCompetitorRolesError,
     sync: syncPastBannedCompetitorRoles,
-  } = useLoadedData(apiV0Urls.userRoles.list({
+  } = useLoadedData(`${apiV0Urls.userRoles.list({
     isActive: false,
     groupType: groupTypes.banned_competitors,
-  }, 'startDate:desc'));
+  }, 'startDate:desc')}&page=${pastPage}`);
   const {
     data: bannedGroups,
     loading: bannedGroupLoading,
@@ -61,12 +66,15 @@ export default function BannedCompetitorsPage() {
       <>
         <Header>Banned Competitors</Header>
         {canEditBannedCompetitors && (
-        <Button onClick={() => setBanModalParams({ action: 'new' })}>
-          Ban new competitor
-        </Button>
+          <Button onClick={() => setBanModalParams({ action: 'new' })}>
+            Ban new competitor
+          </Button>
         )}
         <BannedCompetitors
           bannedCompetitorRoles={bannedCompetitorRoles}
+          headers={bannedCompetitorHeaders}
+          activePage={activePage}
+          onPageChange={setActivePage}
           canEditBannedCompetitors={canEditBannedCompetitors}
           editBannedCompetitor={setBanModalParams}
         />
@@ -75,6 +83,9 @@ export default function BannedCompetitorsPage() {
         <Header>Past Banned Competitors</Header>
         <BannedCompetitors
           bannedCompetitorRoles={pastBannedCompetitorRoles}
+          headers={pastBannedCompetitorHeaders}
+          activePage={pastPage}
+          onPageChange={setPastPage}
           canEditBannedCompetitors={canEditBannedCompetitors}
           editBannedCompetitor={setBanModalParams}
         />
