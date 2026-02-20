@@ -11,6 +11,7 @@ export default function Wrapper({
   uploadedScrambleFilesCount,
   showWcaLiveBeta,
   canSubmitResults,
+  canUploadCompetitionResults
 }) {
   return (
     <WCAQueryClientProvider>
@@ -21,6 +22,7 @@ export default function Wrapper({
         uploadedScrambleFilesCount={uploadedScrambleFilesCount}
         showWcaLiveBeta={showWcaLiveBeta}
         canSubmitResults={canSubmitResults}
+        canUploadCompetitionResults={canUploadCompetitionResults}
       />
     </WCAQueryClientProvider>
   );
@@ -33,6 +35,7 @@ function CompetitionResultSubmission({
   uploadedScrambleFilesCount,
   showWcaLiveBeta,
   canSubmitResults,
+  canUploadCompetitionResults
 }) {
   if (resultsSubmitted) {
     return (
@@ -68,7 +71,7 @@ function CompetitionResultSubmission({
         showWcaLiveBeta={showWcaLiveBeta}
       />
       {hasTemporaryResults && (
-        <FormToWrt competitionId={competitionId} canSubmitResults={canSubmitResults} />
+        <FormToWrt competitionId={competitionId} canSubmitResults={canSubmitResults} canUploadCompetitionResults={canUploadCompetitionResults} />
       )}
     </>
   );

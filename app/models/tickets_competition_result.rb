@@ -4,6 +4,7 @@ class TicketsCompetitionResult < ApplicationRecord
   self.table_name = "tickets_competition_result"
 
   enum :status, {
+    comment_saved: "comment_saved",
     submitted: "submitted",
     aborted: "aborted",
     locked_for_posting: "locked_for_posting",

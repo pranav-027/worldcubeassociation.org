@@ -217,6 +217,49 @@ class ResultsSubmissionController < ApplicationController
     render status: :ok, json: { success: true }
   end
 
+  def get_ticket_info
+    competition = competition_from_params
+    ticket = competition.tickets_competition_result
+
+    if ticket.present?
+      render status: :ok, json: {
+        delegate_message: ticket.delegate_message,
+        status: ticket.status,
+      }
+    else
+      render status: :ok, json: {
+        delegate_message: nil,
+        status: nil,
+      }
+    end
+  end
+
+  def save_results_comment
+    competition = competition_from_params
+    message = params.require(:message)
+
+    ActiveRecord::Base.transaction do
+      if competition.tickets_competition_result.present?
+        # Only update status to comment_saved if not already submitted or beyond
+        update_attrs = { delegate_message: message }
+        if !competition.tickets_competition_result.submitted? &&
+           !competition.tickets_competition_result.posted? &&
+           !competition.tickets_competition_result.locked_for_posting?
+          update_attrs[:status] = TicketsCompetitionResult.statuses[:comment_saved]
+        end
+        competition.tickets_competition_result.update!(update_attrs)
+      else
+        TicketsCompetitionResult.create!(
+          status: TicketsCompetitionResult.statuses[:comment_saved],
+          competition_id: competition.id,
+          delegate_message: message,
+        )
+      end
+    end
+
+    render status: :ok, json: { success: true }
+  end
+
   private def competition_from_params
     Competition.find(params[:competition_id])
   end

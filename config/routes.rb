@@ -115,8 +115,10 @@ Rails.application.routes.draw do
     get 'newcomer-dob-check' => 'results_submission#newcomer_dob_check', as: :newcomer_dob_check
     post 'compute_potential_duplicates' => 'results_submission#compute_potential_duplicates', as: :compute_potential_duplicates
     get 'submit-results' => 'results_submission#new', as: :submit_results_edit
+    get 'ticket-info' => 'results_submission#get_ticket_info', as: :get_ticket_info
     get 'upload-scrambles' => 'results_submission#upload_scrambles', as: :upload_scrambles
     post 'submit-results' => 'results_submission#create', as: :submit_results
+    post 'save-results-comment' => 'results_submission#save_results_comment', as: :save_results_comment
     resources :scramble_files, only: %i[index create destroy], shallow: true do
       patch 'update-round-matching' => 'scramble_files#update_round_matching', on: :collection
     end
